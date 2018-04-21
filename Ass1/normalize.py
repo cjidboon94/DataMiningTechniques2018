@@ -18,7 +18,7 @@ for datafile in datafiles:
     dataset['gsm'] = dataset['sms'] + dataset['calls']
     dataset['amusement'] = dataset['game'] + dataset['entertainment']
     dataset['system'] = dataset['utilities'] + dataset['builtin']
-    dataset = dataset.drop(['Unnamed: 0', 'unknown', 'sms', 'calls', 'game', 'entertainment', \
+    dataset = dataset.drop(['unknown', 'sms', 'calls', 'game', 'entertainment', \
                             'utilities', 'builtin', 'other'], axis=1)
 
     variables = dataset.columns
@@ -26,7 +26,7 @@ for datafile in datafiles:
     print '\nUser: {}. Dataset size: {}'.format(datafile, len(dataset))
 
     for variable in variables:
-        if variable in ['valence', 'arousal', 'mood', 'activity']:
+        if variable in ['valence', 'arousal', 'mood', 'activity', 'Unnamed: 0']:
             pass
         else:
             #print ([int(x) for x in dataset[variable]])[1:]

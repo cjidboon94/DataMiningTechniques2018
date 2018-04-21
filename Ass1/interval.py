@@ -9,16 +9,16 @@ import numpy as np
 import pandas as pd
 import os
 
-trainfiles = os.listdir('data_complete/fold_{}/train'.format(1))
-testfiles = os.listdir('data_complete/fold_{}/test'.format(1))
-trainfiles.remove('AS14.32.csv')
-testfiles.remove('AS14.32.csv')
+trainfiles = os.listdir('data_normalized/fold_{}/train'.format(1))
+testfiles = os.listdir('data_normalized/fold_{}/test'.format(1))
+#trainfiles.remove('AS14.32.csv')
+#testfiles.remove('AS14.32.csv')
 
 for user in trainfiles:
     for fold in [1, 2, 3, 4]:
         for window in [2, 3, 4]:
-            train_dataset  = pd.read_csv('data_complete/fold_{}/train/'.format(fold) + user)
-            test_dataset = pd.read_csv('data_complete/fold_{}/test/'.format(fold) + user)
+            train_dataset  = pd.read_csv('data_normalized/fold_{}/train/'.format(fold) + user)
+            test_dataset = pd.read_csv('data_normalized/fold_{}/test/'.format(fold) + user)
 
             test_indices = list(test_dataset['Unnamed: 0'])
             print test_indices
@@ -31,6 +31,7 @@ for user in trainfiles:
             dataset_df = pd.DataFrame(columns=['predict_day', 'user', 'window', 'mood', 'arousal', \
                                                    'valence', 'activity', 'true_mood', 'indexje'])
 
+            print df
             days = list(df['Unnamed: 0.1'])
             for i in range(len(df)):
                 if i + window <= len(df) - 1:
@@ -56,6 +57,8 @@ for user in trainfiles:
 
             train_data = train_data[pd.notnull(train_data['predict_day'])]
             test_data = test_data[pd.notnull(test_data['predict_day'])]
-
-            train_data.to_csv('interval_datasets/window_{}/fold_{}/train/{}'.format(window, fold, user))
-            test_data.to_csv('interval_datasets/window_{}/fold_{}/test/{}'.format(window, fold, user))
+            train_data = train_data.drop('indexje', axis=1)
+            test_data = test_data.drop('indexje', axis=1)
+            train_data.to_csv('interval_datasets_normalized/window_{}/fold_{}/train/{}'.format(window, fold, user), index=False)
+            test_data.to_csv('interval_datasets_normalized/window_{}/fold_{}/test/{}'.format(window, fold, user), index=False)
+            print train_data
