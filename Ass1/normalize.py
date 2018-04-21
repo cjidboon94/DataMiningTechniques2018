@@ -48,4 +48,4 @@ for datafile in datafiles:
     #minmax scale gsm
     x = dataset['gsm']
     dataset['gsm'] = list(x-min(x))/(max(x)-min(x))
-    dataset.to_csv('data_normalized/' + datafile)
+    dataset.to_csv('data_normalized/' + datafile, index=False)
