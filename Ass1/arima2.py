@@ -56,14 +56,11 @@ def evaluate_model(train, test, best_cfg):
 
 
 def dump(errors_test, errors_train, best_cfg, dump_file):
-	thefile = open(dump_file, 'w+')
-	thefile.write("%s\n" % best_cfg)
-	for item in errors_test:
-		thefile.write("%s," % item)
-	thefile.write("\n")
-	for item in errors_train:
-		thefile.write("%s," % item)
-
+	lst = []
+	lst.append(errors_train)
+	lst.append(errors_test)
+	df = pd.DataFrame(lst)
+	df.to_csv(dump_file)
 
 
 best_cfg = ()
