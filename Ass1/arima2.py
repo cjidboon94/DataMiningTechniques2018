@@ -42,7 +42,7 @@ def evaluate_models(dataset, test, p_values, d_values, q_values):
 
 
 def train_model(dataset, test_set):
-	p_values = [0, 1, 2, 4]
+	p_values = [0, 1, 2, 4, 6]
 	d_values = range(0, 3)
 	q_values = range(0, 3)
 	return evaluate_models(dataset, test_set, p_values, d_values, q_values)
@@ -55,27 +55,34 @@ def evaluate_model(train, test, best_cfg):
 	return errors
 
 
-def dump(errors, dump_file):
+def dump(errors_test, errors_train, best_cfg, dump_file):
 	thefile = open(dump_file, 'w+')
-	for item in errors:
-		thefile.write("%s\n" % item)
+	thefile.write("%s\n" % best_cfg)
+	for item in errors_test:
+		thefile.write("%s," % item)
+	thefile.write("\n")
+	for item in errors_train:
+		thefile.write("%s," % item)
+
 
 
 best_cfg = ()
-dirs = ["fold_1", "fold_2", "fold_3", "fold_4"]
+dirs = ["fold_4", "fold_1", "fold_2", "fold_3"]
+users = ["AS14.01.csv","AS14.02.csv","AS14.03.csv","AS14.05.csv","AS14.06.csv","AS14.07.csv","AS14.08.csv","AS14.09.csv","AS14.12.csv","AS14.13.csv","AS14.14.csv","AS14.15.csv","AS14.16.csv","AS14.17.csv","AS14.19.csv","AS14.20.csv","AS14.23.csv","AS14.24.csv","AS14.25.csv","AS14.26.csv","AS14.27.csv","AS14.28.csv","AS14.29.csv","AS14.30.csv","AS14.31.csv","AS14.33.csv"]
 for dirr in dirs:
-	user = "AS14.01.csv"
-	train_file = "data_normalized/{}/train/{}".format(dirr, user)
-	test_file = "data_normalized/{}/test/{}".format(dirr, user)
-	dump_file = "data_normalized_res/arima/{}/{}".format(dirr, user)
+	for user in users:
+		train_file = "data_normalized/{}/train/{}".format(dirr, user)
+		test_file = "data_normalized/{}/test/{}".format(dirr, user)
+		dump_file = "data_normalized_res/arima/{}/{}".format(dirr, user)
 
-	df = pd.read_csv(train_file)
-	moods_train = df["mood"].tolist()
-	df = pd.read_csv(test_file)
-	moods_test = df["mood"].tolist()
+		df = pd.read_csv(train_file)
+		moods_train = df["mood"].tolist()
+		df = pd.read_csv(test_file)
+		moods_test = df["mood"].tolist()
 
-	if (dirr == dirs[0]):
-		best_cfg = train_model(moods_train, moods_test)
+		if (dirr == dirs[0]):
+			best_cfg = train_model(moods_train, moods_test)
 
-	errors = evaluate_model(moods_train, moods_test, best_cfg)
-	dump(errors, dump_file)
+		errors_test = evaluate_model(moods_train, moods_test, best_cfg)
+		errors_train = evaluate_model(moods_train, moods_train, best_cfg)
+		dump(errors_test, errors_train, ','.join(map(str, best_cfg)), dump_file)
