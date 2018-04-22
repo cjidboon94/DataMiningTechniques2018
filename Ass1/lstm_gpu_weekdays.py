@@ -7,10 +7,10 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping
 import os
 #import matplotlib.pyplot as plt
 
-checkpoint_path = '/home/s1924192/lstmweights/lstm.hdf5'
+checkpoint_path = '/home/s1924192/lstmweights_weekdays/lstm.hdf5'
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "14"
+os.environ["CUDA_VISIBLE_DEVICES"] = "13"
 
 datasets = ['moodformood', '4things', 'allstuff']
 dataset = datasets[2]
@@ -19,8 +19,8 @@ userfiles = os.listdir('data_normalized/fold_1/train')
 
 for fold in [1,2,3,4]:
     for user in userfiles:
-        train = pd.read_csv('data_rnn/fold_{}/train/{}'.format(fold, user))
-        test = pd.read_csv('data_rnn/fold_{}/test/{}'.format(fold, user))
+        train = pd.read_csv('data_rnn_weekdays/fold_{}/train/{}'.format(fold, user))
+        test = pd.read_csv('data_rnn_weekdays/fold_{}/test/{}'.format(fold, user))
 
         trainY, testY = np.array(train['true_mood']), np.array(test['true_mood']) 
         
@@ -52,8 +52,8 @@ for fold in [1,2,3,4]:
 
         trainY = trainY.reshape(-1)
         testY = testY.reshape(-1)
-
+        # errors
         train_errors = trainY - trainPredict
         test_errors = testY - testPredict
 
-        pd.DataFrame([train_days, train_errors, test_days, test_errors]).to_csv('data_normalized_res/rnn_all/fold_{}/{}'.format(fold, user))
+        pd.DataFrame([train_days, train_errors, test_days, test_errors]).to_csv('data_normalized_res/rnn_weekdays/fold_{}/{}'.format(fold, user))
